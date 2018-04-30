@@ -82,10 +82,10 @@
       <?php          
             // demande de la requête pour obtenir la liste des éléments 
             // forfaitisés du visiteur connecté pour le mois demandé
-            $req = obtenirReqEltsForfaitFicheFrais($mois, obtenirIdUserConnecte());
-            $idJeuEltsFraisForfait = mysql_query($req, $idConnexion);
-            echo mysql_error($idConnexion);
-            $lgEltForfait = mysql_fetch_assoc($idJeuEltsFraisForfait);
+            $req = obtenirReqEltsForfaitFicheFrais($idConnexion, $mois, obtenirIdUserConnecte());
+            $idJeuEltsFraisForfait = $idConnexion -> query($req);
+            echo $idConnexion -> error;
+            $lgEltForfait = $idJeuEltsFraisForfait -> fetch_assoc();
             while ( is_array($lgEltForfait) ) {
                 $idFraisForfait = $lgEltForfait["idFraisForfait"];
                 $libelle = $lgEltForfait["libelle"];
@@ -100,9 +100,9 @@
                     value="<?php echo $quantite; ?>" />
             </p>
             <?php        
-                $lgEltForfait = mysql_fetch_assoc($idJeuEltsFraisForfait);   
+                $lgEltForfait = $idJeuEltsFraisForfait -> fetch_assoc();   
             }
-            mysql_free_result($idJeuEltsFraisForfait);
+            $idJeuEltsFraisForfait -> free_result();
             ?>
           </fieldset>
       </div>
@@ -127,9 +127,9 @@
 <?php          
           // demande de la requête pour obtenir la liste des éléments hors
           // forfait du visiteur connecté pour le mois demandé
-          $req = obtenirReqEltsHorsForfaitFicheFrais($mois, obtenirIdUserConnecte());
-          $idJeuEltsHorsForfait = mysql_query($req, $idConnexion);
-          $lgEltHorsForfait = mysql_fetch_assoc($idJeuEltsHorsForfait);
+          $req = obtenirReqEltsHorsForfaitFicheFrais($idConnexion, $mois, obtenirIdUserConnecte());
+          $idJeuEltsHorsForfait = $idConnexion -> query($req);
+          $lgEltHorsForfait = $idJeuEltsHorsForfait -> fetch_assoc();
           
           // parcours des frais hors forfait du visiteur connecté
           while ( is_array($lgEltHorsForfait) ) {
@@ -143,9 +143,9 @@
                        title="Supprimer la ligne de frais hors forfait">Supprimer</a></td>
               </tr>
           <?php
-              $lgEltHorsForfait = mysql_fetch_assoc($idJeuEltsHorsForfait);
+              $lgEltHorsForfait = $idJeuEltsHorsForfait -> fetch_assoc();
           }
-          mysql_free_result($idJeuEltsHorsForfait);
+          $idJeuEltsHorsForfait -> free_result();
 ?>
     </table>
       <form action="" method="post">
