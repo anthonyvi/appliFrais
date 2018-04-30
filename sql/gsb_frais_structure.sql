@@ -1,117 +1,152 @@
 -- phpMyAdmin SQL Dump
--- version 3.3.9
--- http://www.phpmyadmin.net
+-- version 4.7.9
+-- https://www.phpmyadmin.net/
 --
--- Serveur: localhost
--- GÃ©nÃ©rÃ© le : Lun 04 Juillet 2011 Ã  14:08
--- Version du serveur: 5.5.8
--- Version de PHP: 5.3.5
+-- Hôte : 127.0.0.1:3306
+-- Généré le :  lun. 30 avr. 2018 à 15:36
+-- Version du serveur :  5.7.21
+-- Version de PHP :  7.2.4
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de donnÃ©es: `gsb_frais`
+-- Base de données :  `gsb`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `FraisForfait`
+-- Structure de la table `etat`
 --
 
-CREATE TABLE IF NOT EXISTS `FraisForfait` (
+DROP TABLE IF EXISTS `etat`;
+CREATE TABLE IF NOT EXISTS `etat` (
+  `id` char(2) NOT NULL,
+  `libelle` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `fichefrais`
+--
+
+DROP TABLE IF EXISTS `fichefrais`;
+CREATE TABLE IF NOT EXISTS `fichefrais` (
+  `idUtilisateur` char(4) NOT NULL,
+  `mois` char(6) NOT NULL,
+  `nbJustificatifs` int(11) DEFAULT NULL,
+  `montantValide` decimal(10,2) DEFAULT NULL,
+  `dateModif` date DEFAULT NULL,
+  `idEtat` char(2) DEFAULT 'CR',
+  PRIMARY KEY (`idUtilisateur`,`mois`),
+  KEY `idEtat` (`idEtat`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `fraisforfait`
+--
+
+DROP TABLE IF EXISTS `fraisforfait`;
+CREATE TABLE IF NOT EXISTS `fraisforfait` (
   `id` char(3) NOT NULL,
   `libelle` char(20) DEFAULT NULL,
   `montant` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-
--- --------------------------------------------------------
-
---
--- Structure de la table `Etat`
---
-
-CREATE TABLE IF NOT EXISTS `Etat` (
-  `id` char(2) NOT NULL,
-  `libelle` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `Visiteur`
+-- Structure de la table `lignefraisforfait`
 --
 
-CREATE TABLE IF NOT EXISTS `Visiteur` (
+DROP TABLE IF EXISTS `lignefraisforfait`;
+CREATE TABLE IF NOT EXISTS `lignefraisforfait` (
+  `idUtilisateur` char(4) NOT NULL,
+  `mois` char(6) NOT NULL,
+  `idFraisForfait` char(3) NOT NULL,
+  `quantite` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idUtilisateur`,`mois`,`idFraisForfait`),
+  KEY `idFraisForfait` (`idFraisForfait`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `lignefraishorsforfait`
+--
+
+DROP TABLE IF EXISTS `lignefraishorsforfait`;
+CREATE TABLE IF NOT EXISTS `lignefraishorsforfait` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idUtilisateur` char(4) NOT NULL,
+  `mois` char(6) NOT NULL,
+  `libelle` varchar(100) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `montant` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idVisiteur` (`idUtilisateur`,`mois`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `utilisateur`
+--
+
+DROP TABLE IF EXISTS `utilisateur`;
+CREATE TABLE IF NOT EXISTS `utilisateur` (
   `id` char(4) NOT NULL,
   `nom` char(30) DEFAULT NULL,
-  `prenom` char(30)  DEFAULT NULL, 
+  `prenom` char(30) DEFAULT NULL,
   `login` char(20) DEFAULT NULL,
   `mdp` char(20) DEFAULT NULL,
   `adresse` char(30) DEFAULT NULL,
   `cp` char(5) DEFAULT NULL,
   `ville` char(30) DEFAULT NULL,
   `dateEmbauche` date DEFAULT NULL,
+  `fonction` enum('visiteur','comptable') DEFAULT 'visiteur',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-
--- --------------------------------------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Structure de la table `FicheFrais`
+-- Contraintes pour les tables déchargées
 --
 
-CREATE TABLE IF NOT EXISTS `fichefrais` (
-  `idVisiteur` char(4) NOT NULL,
-  `mois` char(6) NOT NULL,
-  `nbJustificatifs` int(11) DEFAULT NULL,
-  `montantValide` decimal(10,2) DEFAULT NULL,
-  `dateModif` date DEFAULT NULL,
-  `idEtat` char(2) DEFAULT 'CR',
-  PRIMARY KEY (`idVisiteur`,`mois`),
-  FOREIGN KEY (`idEtat`) REFERENCES Etat(`id`),
-  FOREIGN KEY (`idVisiteur`) REFERENCES Visiteur(`id`)
-) ENGINE=InnoDB;
-
-
--- --------------------------------------------------------
+--
+-- Contraintes pour la table `fichefrais`
+--
+ALTER TABLE `fichefrais`
+  ADD CONSTRAINT `fichefrais_ibfk_1` FOREIGN KEY (`idEtat`) REFERENCES `etat` (`id`),
+  ADD CONSTRAINT `fichefrais_ibfk_2` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`);
 
 --
--- Structure de la table `LigneFraisForfait`
+-- Contraintes pour la table `lignefraisforfait`
 --
-
-CREATE TABLE IF NOT EXISTS `LigneFraisForfait` (
-  `idVisiteur` char(4) NOT NULL,
-  `mois` char(6) NOT NULL,
-  `idFraisForfait` char(3) NOT NULL,
-  `quantite` int(11) DEFAULT NULL,
-  PRIMARY KEY (`idVisiteur`,`mois`,`idFraisForfait`),
-  FOREIGN KEY (`idVisiteur`, `mois`) REFERENCES FicheFrais(`idVisiteur`, `mois`),
-  FOREIGN KEY (`idFraisForfait`) REFERENCES FraisForfait(`id`)
-) ENGINE=InnoDB;
-
--- --------------------------------------------------------
+ALTER TABLE `lignefraisforfait`
+  ADD CONSTRAINT `lignefraisforfait_ibfk_1` FOREIGN KEY (`idUtilisateur`,`mois`) REFERENCES `fichefrais` (`idUtilisateur`, `mois`),
+  ADD CONSTRAINT `lignefraisforfait_ibfk_2` FOREIGN KEY (`idFraisForfait`) REFERENCES `fraisforfait` (`id`);
 
 --
--- Structure de la table `LigneFraisHorsForfait`
+-- Contraintes pour la table `lignefraishorsforfait`
 --
+ALTER TABLE `lignefraishorsforfait`
+  ADD CONSTRAINT `lignefraishorsforfait_ibfk_1` FOREIGN KEY (`idUtilisateur`,`mois`) REFERENCES `fichefrais` (`idUtilisateur`, `mois`);
+COMMIT;
 
-CREATE TABLE IF NOT EXISTS `LigneFraisHorsForfait` (
-  `id` int(11) NOT NULL auto_increment,
-  `idVisiteur` char(4) NOT NULL,
-  `mois` char(6) NOT NULL,
-  `libelle` varchar(100) DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `montant` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (`idVisiteur`, `mois`) REFERENCES FicheFrais(`idVisiteur`, `mois`)
-) ENGINE=InnoDB;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
