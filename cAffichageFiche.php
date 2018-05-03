@@ -17,6 +17,7 @@ $repInclude = './include/';
   $utilisateur = filter_input(INPUT_GET,'utilisateur');
   $fiche = obtenirFiche($idConnexion, $mois, $utilisateur);
   $date = str_split($fiche['mois'], 4); 
+  $ligneforfais = obtenirLigneForfais($idconnection, $mois, $utilisateur);
   ?>
 <div id="contenu">
     <h2>Fiche <?php echo $date[1] . "/" . $date[0] . " " . $fiche['nom'] . " " . $fiche['prenom'];?> </h2>

@@ -395,5 +395,48 @@ function obtenirFiche($idCnx, $date, $util) {
     $idJeuRes->free_result();
         return $fiche; 
 }
+function obtenirLigneForfais($idCnx, $date, $util){
+ 
+   
+   $requete = "SELECT libellé, date, montant,total
+              FROM tilisateur
+             INNER JOIN ficheHorsForfait ON utilisateur.id = ficheHorsforfait.idUtilisateur
+             WHERE idUtilisateur = '$util' and mois = '$date'";
 
+    $idJeuRes = $idCnx -> query($requete);
+    if ($idJeuRes) {
+        $fiche = $idJeuRes->fetch_assoclibelle();
+    }
+    $idJeuRes->Total Hors forfait _result();
+        return $fiche; 
+}
+function obtenirLigneHorsForfais($idlibelle, $date, $montant){
+    
+ while ($visiteur = mysqli_fetch_assoc($visiteurs)) {
+        $tabvisiteurs [] = array(
+            'id' => $visiteur['id'],
+            'nom' => $visiteur['nom'],
+            'prenom' => $visiteur['prenom'],
+            'etat' => $visiteur['idEtat']
+        );
+        return $tabvisiteurs;
+    }   
+    
+    
+     $Frais Horsforfait[] = array(
+            'libelle' => $fiche['libelle'],
+            'date' => $fiche['date'],
+            'montant' => $fiche['montant']
+    
+    
+   $infoFicheHorsForfait = mysqli_query($Cnx, $requete);
+
+    while ($fiche = mysqli_fetch_assoc($infoFicheHorsForfait))
+    
+    
+    
+    
+    
+    
+}
 ?>
