@@ -2,8 +2,8 @@
 -- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1:3306
--- Généré le :  lun. 30 avr. 2018 à 15:36
+-- HÃ´te : 127.0.0.1:3306
+-- GÃ©nÃ©rÃ© le :  lun. 30 avr. 2018 Ã  15:36
 -- Version du serveur :  5.7.21
 -- Version de PHP :  7.2.4
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `gsb`
+-- Base de donnÃ©es :  `gsb`
 --
 
 -- --------------------------------------------------------
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Contraintes pour les tables déchargées
+-- Contraintes pour les tables dÃ©chargÃ©es
 --
 
 --

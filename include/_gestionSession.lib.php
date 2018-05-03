@@ -36,9 +36,10 @@ function obtenirIdUserConnecte() {
  * @param string login du visiteur
  * @return void    
  */
-function affecterInfosConnecte($id, $login) {
+function affecterInfosConnecte($id, $login, $fonction) {
     $_SESSION["idUser"] = $id;
     $_SESSION["loginUser"] = $login;
+    $_SESSION["foncUser"] = $fonction;
 }
 
 /** 
@@ -49,6 +50,7 @@ function affecterInfosConnecte($id, $login) {
 function deconnecterVisiteur() {
     unset($_SESSION["idUser"]);
     unset($_SESSION["loginUser"]);
+    unset($_SESSION["foncUser"]);
 }
 
 /** 
