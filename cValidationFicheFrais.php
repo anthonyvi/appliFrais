@@ -34,8 +34,8 @@ $repInclude = './include/';
                <tr>
                     <td><?php echo $fiche['nom']?></td>
                     <td><?php echo $fiche['prenom']?></td>
-                    <td><a href="cAffichageFicheFrais.php?id=<?php echo $fiche['id']?>"> lien vers la fiche </a></td>
-                    <td><?php echo obtenirLibelleEtat($idConnexion, $fiche['etat']);?></td>
+                    <td><a href="cAffichageFiche.php?mois=<?php echo $fiche['mois']?>&utilisateur=<?php echo $fiche['utilisateur']?>"> lien vers la fiche </a></td>
+                    <td><?php echo $fiche['etat'];?></td>
                </tr>
               <?php
               }
