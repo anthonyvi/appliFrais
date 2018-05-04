@@ -233,6 +233,12 @@ function obtenirReqEltsForfaitFicheFrais($idCnx, $unMois, $unIdUtilisateur) {
     return $requete;
 }
 
+function obtenirNbJustificatif($unMois, $unIdUtilisateur) {
+    $requete = "select nbJustificatifs from fichefrais
+              where idUtilisateur='" . $unIdUtilisateur . "' and mois='" . $unMois . "'";
+    return $requete;
+}
+
 /**
  * Retourne le texte de la requête select concernant les éléments hors forfait 
  * d'un visiteur pour un mois donnés. 
@@ -309,6 +315,14 @@ function modifierEltsForfait($idCnx, $unMois, $unIdUtilisateur, $desEltsForfait)
                 . $unMois . "' and idFraisForfait='" . $idFraisForfait . "'";
         $idCnx->query($requete);
     }
+}
+
+function modifFicheFrais($idCnx, $unMois, $unIdUtilisateur, $desEltsForfait) {
+    $unMois = filtrerChainePourBD($idCnx, $unMois);
+    $unIdUtilisateur = filtrerChainePourBD($idCnx, $unIdUtilisateur);
+    $requete = "UPDATE fichefrais SET nbJustificatifs =  '$desEltsForfait', idEtat = 'VA'
+                WHERE idUtilisateur = '$unIdUtilisateur' AND mois = '$unMois ' ";
+    $idCnx->query($requete);
 }
 
 /**
@@ -388,55 +402,55 @@ function obtenirFiche($idCnx, $date, $util) {
              INNER JOIN fichefrais ON utilisateur.id = fichefrais.idUtilisateur
              WHERE idUtilisateur = '$util' and mois = '$date'";
 
-    $idJeuRes = $idCnx -> query($requete);
+    $idJeuRes = $idCnx->query($requete);
     if ($idJeuRes) {
         $fiche = $idJeuRes->fetch_assoc();
     }
     $idJeuRes->free_result();
-        return $fiche; 
+    return $fiche;
 }
-function obtenirLigneForfais($idCnx, $date, $util){
- 
-   
-   $requete = "SELECT libellé, date, montant,total
-              FROM tilisateur
-             INNER JOIN ficheHorsForfait ON utilisateur.id = ficheHorsforfait.idUtilisateur
+
+function ligneForfais($idCnx, $date, $util) {
+    $requete = "SELECT idUtilisateur, mois, quantite, libelle, montant
+                FROM lignefraisforfait
+                INNER JOIN fraisforfait ON lignefraisforfait.idFraisForfait = fraisforfait.id
              WHERE idUtilisateur = '$util' and mois = '$date'";
-
-    $idJeuRes = $idCnx -> query($requete);
+    $idJeuRes = $idCnx->query($requete);
+    $lignes = false;
     if ($idJeuRes) {
-        $fiche = $idJeuRes->fetch_assoclibelle();
+        while ($ligne = $idJeuRes->fetch_assoc()) {
+            $lignes [] = array(
+                'id' => $ligne['idUtilisateur'],
+                'mois' => $ligne['mois'],
+                'quantite' => $ligne['quantite'],
+                'libelle' => $ligne['libelle'],
+                'montant' => $ligne['montant']
+            );
+        }
+        $idJeuRes->free_result();
     }
-    $idJeuRes->Total Hors forfait _result();
-        return $fiche; 
+    return $lignes;
 }
-function obtenirLigneHorsForfais($idlibelle, $date, $montant){
-    
- while ($visiteur = mysqli_fetch_assoc($visiteurs)) {
-        $tabvisiteurs [] = array(
-            'id' => $visiteur['id'],
-            'nom' => $visiteur['nom'],
-            'prenom' => $visiteur['prenom'],
-            'etat' => $visiteur['idEtat']
-        );
-        return $tabvisiteurs;
-    }   
-    
-    
-     $Frais Horsforfait[] = array(
-            'libelle' => $fiche['libelle'],
-            'date' => $fiche['date'],
-            'montant' => $fiche['montant']
-    
-    
-   $infoFicheHorsForfait = mysqli_query($Cnx, $requete);
 
-    while ($fiche = mysqli_fetch_assoc($infoFicheHorsForfait))
-    
-    
-    
-    
-    
-    
+function horsForfait($idCnx, $date, $util) {
+    $requete = "SELECT libelle, date, montant
+                FROM lignefraishorsforfait
+                WHERE idUtilisateur = '$util' and mois = '$date'";
+    $idJeuRes = $idCnx->query($requete);
+    $lignes = false;
+    if ($idJeuRes) {
+        while ($ligne = $idJeuRes->fetch_assoc()) {
+            $lignes [] = array(
+                'montant' => $ligne['montant'],
+                'libelle' => $ligne['libelle'],
+                'date' => $ligne['date']
+            );
+        }
+        $idJeuRes->free_result();
+    }
+    return $lignes;
 }
 ?>
+
+
+
