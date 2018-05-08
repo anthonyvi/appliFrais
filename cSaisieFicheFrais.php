@@ -7,8 +7,8 @@
   $repInclude = './include/';
   require($repInclude . "_init.inc.php");
 
-  // page inaccessible si visiteur non connecté
-  if (!estVisiteurConnecte()) {
+  // page inaccessible si utilisateur non connecté
+  if (!estUtilisateurConnecte()) {
       header("Location: cSeConnecter.php");  
   }
   require($repInclude . "_entete.inc.html");
@@ -100,9 +100,9 @@
                     value="<?php echo $quantite; ?>" />
             </p>
             <?php        
-                $lgEltForfait = $idJeuEltsFraisForfait -> fetch_assoc();   
+                $lgEltForfait = $idJeuEltsFraisForfait -> fetch_assoc();
             }
-            $idJeuEltsFraisForfait -> free_result();
+            mysqli_free_result($idJeuEltsFraisForfait);
             ?>
           </fieldset>
       </div>
@@ -186,4 +186,4 @@
 <?php        
   require($repInclude . "_pied.inc.html");
   require($repInclude . "_fin.inc.php");
-?>
+?> 

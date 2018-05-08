@@ -7,8 +7,8 @@
   $repInclude = './include/';
   require($repInclude . "_init.inc.php");
 
-  // page inaccessible si visiteur non connecté
-  if ( ! estVisiteurConnecte() ) {
+  // page inaccessible si utilisateur non connecté
+  if ( ! estUtilisateurConnecte() ) {
       header("Location: cSeConnecter.php");  
   }
   require($repInclude . "_entete.inc.html");
@@ -49,7 +49,7 @@
             <?php
                 // on propose tous les mois pour lesquels le visiteur a une fiche de frais
                 $req = obtenirReqMoisFicheFrais(obtenirIdUserConnecte());
-                $idJeuMois = $idConnexion -> query($req);
+                $idJeuMois = $idConnexion -> query($req) ;
                 $lgMois = $idJeuMois -> fetch_assoc();
                 while ( is_array($lgMois) ) {
                     $mois = $lgMois["mois"];
@@ -58,7 +58,7 @@
             ?>    
             <option value="<?php echo $mois; ?>"<?php if ($moisSaisi == $mois) { ?> selected="selected"<?php } ?>><?php echo obtenirLibelleMois($noMois) . " " . $annee; ?></option>
             <?php
-                    $lgMois = $idJeuMois -> fetch_assoc();        
+                    $lgMois = $idJeuMois -> fetch_assoc();
                 }
                 $idJeuMois -> free_result();
             ?>
@@ -95,8 +95,8 @@
             // demande de la requête pour obtenir la liste des éléments 
             // forfaitisés du visiteur connecté pour le mois demandé
             $req = obtenirReqEltsForfaitFicheFrais($idConnexion, $moisSaisi, obtenirIdUserConnecte());
-            $idJeuEltsFraisForfait = $idConnexion->  query($req);
-            echo $idConnexion -> error();
+            $idJeuEltsFraisForfait = $idConnexion -> query($req);
+            echo $idConnexion -> error;
             $lgEltForfait = $idJeuEltsFraisForfait -> fetch_assoc();
             // parcours des frais forfaitisés du visiteur connecté
             // le stockage intermédiaire dans un tableau est nécessaire
@@ -145,7 +145,7 @@
 <?php          
             // demande de la requête pour obtenir la liste des éléments hors
             // forfait du visiteur connecté pour le mois demandé
-            $req = obtenirReqEltsHorsForfaitFicheFrais($moisSaisi, obtenirIdUserConnecte());
+            $req = obtenirReqEltsHorsForfaitFicheFrais($idConnexion, $moisSaisi, obtenirIdUserConnecte());
             $idJeuEltsHorsForfait = $idConnexion -> query($req);
             $lgEltHorsForfait = $idJeuEltsHorsForfait -> fetch_assoc();
             
@@ -172,4 +172,4 @@
 <?php        
   require($repInclude . "_pied.inc.html");
   require($repInclude . "_fin.inc.php");
-?> 
+?>
